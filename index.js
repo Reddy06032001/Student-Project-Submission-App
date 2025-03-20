@@ -6,9 +6,21 @@ require('dotenv').config();
 
 const app = express();
 
+// Enable CORS with proper configuration
+app.use(
+    cors({
+        origin: ["http://localhost:3000", "https://student-project-submission-app.onrender.com"], // Allowed origins
+        methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
+        allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+        credentials: true, // Allow cookies if needed
+    })
+);
+
+// Handle CORS Preflight Requests
+app.options("*", cors());
+
 // Middleware
 app.use(express.json());
-app.use(cors());
 
 // Database Connection
 connectDB();
