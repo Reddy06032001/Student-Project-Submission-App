@@ -2,35 +2,30 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const projectRoutes = require("./routes/projects");
-require("dotenv").config();
-
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+dotenv.config();
 const app = express();
 
-// ✅ Enable CORS
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://student-project-submission-app.onrender.com",
-    ], // Allowed origins
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
-    credentials: true, // Allow cookies if needed
-  })
-);
+// Middleware
+app.use(express.json());
+app.use(cors());
 
-// ✅ Handle CORS Preflight Requests
-app.options("*", cors());
-
-// ✅ Middleware
+// Middleware
 app.use(express.json());
 
-// ✅ Database Connection
+// Database Connection
 connectDB();
 
-// ✅ Routes
+// Routes
 app.use("/projects", projectRoutes);
+// Correct MongoDB Connection
+mongoose
+  .connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 5000, // Avoid infinite waiting
+  })
+  .then(() => console.log("✅ MongoDB Connected Successfully"))
+  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
-// ✅ Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
