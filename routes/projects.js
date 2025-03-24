@@ -31,9 +31,9 @@ router.post("/submit", async (req, res) => {
       studentRollNo: { $in: studentRollNo },
     });
     if (existingProject) {
-      return res
-        .status(400)
-        .json({ message: "One or more student Roll Numbers already exist." });
+      return res.status(400).json({
+        message: `student Roll Number ${studentRollNo} already exist.`,
+      });
     }
 
     const newProject = new Project({
