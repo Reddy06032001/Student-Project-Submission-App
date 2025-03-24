@@ -26,6 +26,16 @@ router.post("/submit", async (req, res) => {
         .json({ message: "Exactly 4 student Roll Numbers are required." });
     }
 
+    // Check if any studentRollNo already exists
+    const existingProject = await Project.findOne({
+      studentRollNo: { $in: studentRollNo },
+    });
+    if (existingProject) {
+      return res
+        .status(400)
+        .json({ message: "One or more student Roll Numbers already exist." });
+    }
+
     const newProject = new Project({
       studentNames,
       studentRollNo,
